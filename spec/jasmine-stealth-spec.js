@@ -26,20 +26,14 @@ describe("jasmine-stealth", function() {
     });
 
     context("the stubbing is unmet", function() {
-      beforeEach(function() {
-        result = spy("not 53");
-      });
       it("returns undefined", function() {
-        expect(result).not.toBeDefined();
+        expect(spy("not 53")).not.toBeDefined();
       });
     });
 
     context("the stubbing is met", function() {
-      beforeEach(function() {
-        result = spy("53");
-      });
       it("returns the stubbed value", function() {
-        expect(result).toEqual("winning");
+        expect(spy("53")).toEqual("winning");
       });
     });
 
@@ -58,16 +52,18 @@ describe("jasmine-stealth", function() {
       });
     });
 
-    context("complex return types are stubbed", function() {
-      var complexType;
-      beforeEach(function() {
-        complexType = {
-          fruits: ['apple','berry'],
-          yogurts: {
-            greek: function() { return "expensive"; }
-          }
+    var complexType;
+    beforeEach(function() {
+      complexType = {
+        fruits: ['apple','berry'],
+        yogurts: {
+          greek: function() { return "expensive"; }
         }
+      }
+    });
 
+    context("complex return types are stubbed", function() {
+      beforeEach(function() {
         spy.when("breakfast").thenReturn(complexType);
       });
 
@@ -77,15 +73,7 @@ describe("jasmine-stealth", function() {
     });
 
     context("complex argument types are stubbed", function() {
-      var complexType;
       beforeEach(function() {
-        complexType = {
-          fruits: ['apple','berry'],
-          yogurts: {
-            greek: function() { return "expensive"; }
-          }
-        }
-
         spy.when(complexType).thenReturn("breakfast");
       });
 
@@ -103,7 +91,5 @@ describe("jasmine-stealth", function() {
         expect(spy(1,1,2,3,5)).toBe("fib");
       });
     });
-
   });
-
 });
