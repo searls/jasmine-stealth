@@ -6,9 +6,9 @@ jasmine-stealth is a [Jasmine](https://github.com/pivotal/jasmine) helper that a
 
 ## "when" + "thenReturn"
 
-One annoyance with Jasmine spies is the default semantics of `Spy#andReturn` limits you to a single return value, regardless of which arguments a spy is invoked with. And the arguments a spy is called with usually *matter* to the spec. None of your out-of-the-box options are great:
+One annoyance with Jasmine spies is the default semantics of `Spy#andReturn` limits you to a single return value, regardless of which arguments a spy is invoked with. However, the arguments a spy is called with *usually matter* to the spec. None of your out-of-the-box options are great:
 
-1. You could use `Spy#andCallFake` to return conditionally. Except this isn't very expressive, and may grow fatter with time.
+1. You could instead use `Spy#andCallFake` to return conditionally. But this isn't very expressive, and may grow fatter if more conditions are added.
 
 2. You could write an additional `it` that uses `toHaveBeenCalledWith`, but then we're verifying the same call that we're stubbing, which requires the spec to be redundant in order to be complete.
 
@@ -58,3 +58,7 @@ Both will create spies, but now the spec's intent will be a tad more clear. Espe
     });
 
 That might help the reader figure out your intent, but obviously you're free to take it or leave it.
+
+## Future plans
+
+Next step is to add an argument matcher API for #when. Making that argument matcher API work for `toHaveBeenCalledWith` will also be important.
