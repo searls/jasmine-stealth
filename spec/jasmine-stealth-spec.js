@@ -39,16 +39,16 @@ describe("jasmine-stealth", function() {
 
     context("multiple stubbings exist", function() {
       beforeEach(function() {
-        spy.when("pirate").thenReturn("argh");
-        spy.when("panda").thenReturn("sad");
+        spy.when("pirate", { booty: ["jewels","coins"]}).thenReturn("argh!");
+        spy.when("panda",1).thenReturn("sad");
       });
 
       it("stubs the first accurately", function() {
-        expect(spy("pirate")).toBe("argh");
+        expect(spy("pirate",{ booty: ["jewels","coins"]})).toBe("argh!");
       });
 
       it("stubs the second too", function() {
-        expect(spy("panda")).toBe("sad");
+        expect(spy("panda",1)).toBe("sad");
       });
     });
 
@@ -91,5 +91,38 @@ describe("jasmine-stealth", function() {
         expect(spy(1,1,2,3,5)).toBe("fib");
       });
     });
+
+    context("default andReturn plus some conditional stubbing", function() {
+      beforeEach(function() {
+        spy.andReturn("football");
+        spy.when("bored").thenReturn("baseball");
+      });
+
+      it("hasn't been called yet", function() {
+        expect(spy).not.toHaveBeenCalled();
+      });
+
+      it("has a callCount of zero", function() {
+        expect(spy.callCount).toBe(0);
+      });
+
+      it("has nothing in the calls array", function() {
+        expect(spy.calls.length).toBe(0);
+      });
+
+      context("stubbing is not satisfied", function() {
+        it("returns the default stubbed value", function() {
+          expect(spy("anything at all")).toBe("football");
+        });
+      });
+
+      context("stubbing is satisfied", function() {
+        it("returns the specific stubbed value", function() {
+          expect(spy("bored")).toBe("baseball");
+        });
+      });
+
+    });
+
   });
 });
