@@ -15,8 +15,21 @@ describe("jasmine-stealth", function() {
       expect(result).toBe(spy);
     });
 
-    xcontext("the stubbing is unmet", function() {
+    context("the stubbing is unmet", function() {
       beforeEach(function() {
+        result = spy("not 54");
+      });
+      it("returns undefined", function() {
+        expect(result).not.toBeDefined();
+      });
+    });
+
+    context("the stubbing is met", function() {
+      beforeEach(function() {
+        result = spy("54");
+      });
+      it("returns the stubbed value", function() {
+        expect(result).toEqual("winning");
       });
     });
 
