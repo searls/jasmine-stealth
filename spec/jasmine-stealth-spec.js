@@ -98,16 +98,26 @@ describe("jasmine-stealth", function() {
         spy.when("bored").thenReturn("baseball");
       });
 
-      it("hasn't been called yet", function() {
-        expect(spy).not.toHaveBeenCalled();
-      });
+      describe("it doesn't leave appear to invoke the spy", function() {
+        it("hasn't been called yet", function() {
+          expect(spy).not.toHaveBeenCalled();
+        });
 
-      it("has a callCount of zero", function() {
-        expect(spy.callCount).toBe(0);
-      });
+        it("has a callCount of zero", function() {
+          expect(spy.callCount).toBe(0);
+        });
 
-      it("has nothing in the calls array", function() {
-        expect(spy.calls.length).toBe(0);
+        it("has nothing in the calls array", function() {
+          expect(spy.calls.length).toBe(0);
+        });
+
+        it("has no argsForCall entries", function() {
+          expect(spy.argsForCall.length).toBe(0);
+        });
+
+        it("has no mostRecentCall", function() {
+          expect(spy.mostRecentCall).toEqual({});
+        });
       });
 
       context("stubbing is not satisfied", function() {
