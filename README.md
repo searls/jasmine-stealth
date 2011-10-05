@@ -18,7 +18,7 @@ Enter jasmine-stealth, which adds a `#when` method to Jasmine's spies. It lets y
 
     describe("multiple stubbings", function() {
       beforeEach(function() {
-        spy.when("pirate", { booty: ["jewels","coins"]}).thenReturn("argh!");
+        spy.when("pirate", { booty: ["jewels",jasmine.any(String)]}).thenReturn("argh!");
         spy.when("panda",1).thenReturn("sad");
       });
 
@@ -30,6 +30,8 @@ Enter jasmine-stealth, which adds a `#when` method to Jasmine's spies. It lets y
         expect(spy("panda",1)).toBe("sad");
       });
     });
+
+It's worth noting that Jasmine's matchers will work with when-thenReturn (see the usage of `jasmine#any` above).
 
 ## Stub aliases
 
@@ -61,4 +63,4 @@ That might help the reader figure out your intent, but obviously you're free to 
 
 ## Future plans
 
-Next step is to add an argument matcher API for #when. Making that argument matcher API work for `toHaveBeenCalledWith` will also be important.
+I'm interested in adding additional Matchers and coming up with a creative way to eliminate the some keystrokes (say, with `any` instead of `jasmine.any`).

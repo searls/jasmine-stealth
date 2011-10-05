@@ -39,7 +39,7 @@ describe("jasmine-stealth", function() {
 
     context("multiple stubbings exist", function() {
       beforeEach(function() {
-        spy.when("pirate", { booty: ["jewels","coins"]}).thenReturn("argh!");
+        spy.when("pirate", { booty: ["jewels",jasmine.any(String)]}).thenReturn("argh!");
         spy.when("panda",1).thenReturn("sad");
       });
 
