@@ -98,7 +98,7 @@ describe("jasmine-stealth", function() {
         spy.when("bored").thenReturn("baseball");
       });
 
-      describe("it doesn't leave appear to invoke the spy", function() {
+      describe("it doesn't  appear to invoke the spy", function() {
         it("hasn't been called yet", function() {
           expect(spy).not.toHaveBeenCalled();
         });
