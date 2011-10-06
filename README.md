@@ -17,17 +17,23 @@ One annoyance with Jasmine spies is the default semantics of `Spy#andReturn` lim
 Enter jasmine-stealth, which adds a `#when` method to Jasmine's spies. It lets you specify a conditional stubbing by chaining `thenReturn`. Example:
 
     describe("multiple stubbings", function() {
+      var someSpy;
       beforeEach(function() {
-        spy.when("pirate", { booty: ["jewels",jasmine.any(String)]}).thenReturn("argh!");
-        spy.when("panda",1).thenReturn("sad");
+        someSpy = jasmine.createSpy();
+        someSpy.when("pirate", { booty: ["jewels",jasmine.any(String)]}).thenReturn("argh!");
+        someSpy.when("panda",1).thenReturn("sad");
       });
 
       it("stubs the first accurately", function() {
-        expect(spy("pirate",{ booty: ["jewels","coins"]})).toBe("argh!");
+        expect(someSpy("pirate",{ booty: ["jewels","coins"]})).toBe("argh!");
       });
 
       it("stubs the second too", function() {
-        expect(spy("panda",1)).toBe("sad");
+        expect(someSpy("panda",1)).toBe("sad");
+      });
+      
+      it("doesn't return anything when a stubbing isn't satisfied",function(){
+        expect(someSpy("anything else at all")).not.toBeDefined();
       });
     });
 
