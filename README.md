@@ -16,26 +16,28 @@ One annoyance with Jasmine spies is the default semantics of `Spy#andReturn` lim
 
 Enter jasmine-stealth, which adds a `#when` method to Jasmine's spies. It lets you specify a conditional stubbing by chaining `thenReturn`. Example:
 
-    describe("multiple stubbings", function() {
-      var someSpy;
-      beforeEach(function() {
-        someSpy = jasmine.createSpy();
-        someSpy.when("pirate", { booty: ["jewels",jasmine.any(String)]}).thenReturn("argh!");
-        someSpy.when("panda",1).thenReturn("sad");
-      });
+``` javascript
+describe("multiple stubbings", function() {
+  var someSpy;
+  beforeEach(function() {
+    someSpy = jasmine.createSpy();
+    someSpy.when("pirate", { booty: ["jewels",jasmine.any(String)]}).thenReturn("argh!");
+    someSpy.when("panda",1).thenReturn("sad");
+  });
 
-      it("stubs the first accurately", function() {
-        expect(someSpy("pirate",{ booty: ["jewels","coins"]})).toBe("argh!");
-      });
+  it("stubs the first accurately", function() {
+    expect(someSpy("pirate",{ booty: ["jewels","coins"]})).toBe("argh!");
+  });
 
-      it("stubs the second too", function() {
-        expect(someSpy("panda",1)).toBe("sad");
-      });
-      
-      it("doesn't return anything when a stubbing isn't satisfied",function(){
-        expect(someSpy("anything else at all")).not.toBeDefined();
-      });
-    });
+  it("stubs the second too", function() {
+    expect(someSpy("panda",1)).toBe("sad");
+  });
+  
+  it("doesn't return anything when a stubbing isn't satisfied",function(){
+    expect(someSpy("anything else at all")).not.toBeDefined();
+  });
+});
+```
 
 It's worth noting that Jasmine's matchers will work with when-thenReturn (see the usage of `jasmine#any` above).
 
@@ -55,15 +57,17 @@ And
 
 Both will create spies, but now the spec's intent will be a tad more clear. Especially when building a heavy-weight dependency in a `beforeEach` like this one:
 
-    var subject,dependency;
-    beforeEach(function(){
-      dependency = {
-        query: jasmine.createStub("#query"),
-        count: jasmine.createStub("#count"),
-        save: jasmine.createSpy("#save")
-      }
-      subject = Subject(dependency);
-    });
+``` javascript
+var subject,dependency;
+beforeEach(function(){
+  dependency = {
+    query: jasmine.createStub("#query"),
+    count: jasmine.createStub("#count"),
+    save: jasmine.createSpy("#save")
+  }
+  subject = Subject(dependency);
+});
+```
 
 That might help the reader figure out your intent, but obviously you're free to take it or leave it.
 
