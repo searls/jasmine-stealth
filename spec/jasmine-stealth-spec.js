@@ -135,4 +135,42 @@ describe("jasmine-stealth", function() {
     });
 
   });
+
+  describe("#mostRecentCallThat", function() {
+    var spy;
+    beforeEach(function() {
+      spy = jasmine.createSpy();
+
+      spy('foo');
+      spy('bar');
+      spy('baz');
+    });
+
+    context("when given a truth test", function() {
+      var result;
+      beforeEach(function() {
+        result = spy.mostRecentCallThat(function(call) {
+          return call.args[0] === 'bar';
+        });
+      });
+
+      it("returns the call we want", function() {
+        expect(result).toBe(spy.calls[1]);
+      });
+    });
+
+    context("when the context matters", function() {
+      var result;
+      beforeEach(function() {
+        this.panda = 'baz';
+        result = spy.mostRecentCallThat(function(call) {
+          return call.args[0] === this.panda;
+        },this);
+      });
+
+      it("returns the call we want", function() {
+        expect(result).toBe(spy.calls[2]);
+      });
+    });
+  });
 });
