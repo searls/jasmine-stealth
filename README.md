@@ -41,6 +41,32 @@ describe("multiple stubbings", function() {
 
 It's worth noting that Jasmine's matchers will work with when-thenReturn (see the usage of `jasmine#any` above).
 
+## mostRecentCallThat
+
+Sometimes it's helpful to look for a certain call based on some arbitrary criteria (usually the arguments it was passed with).
+
+jasmine-stealth adds the method `mostRecentCallThat(truthTest,context)` to each spy, and it can be used to nab the call you want by passing in a truth test.
+
+See this example:
+
+``` javascript
+
+spy = jasmine.createSpy();
+spy('foo',function(){});
+spy('bar',function(){});
+spy('baz',function(){});
+
+var barCall = spy.mostRecentCallThat(function(call) {
+  return call.args[0] === 'bar';
+}); //returns the invocation passing 'bar'
+
+barCall.args[1]() //invoke the function argument on that call (presumably to test its behavior)
+
+```
+
+You can also pass mostRecentCallThat a context (a value for `this` if the truth test needs access to a `this` object.)
+
+
 ## Stub aliases
 
 I can [often](http://searls.heroku.com/2011/06/03/whats-wrong-with-rubys-test-doubles/) [be](https://github.com/pivotal/jasmine/issues/88#issuecomment-2132975) [found](http://stackoverflow.com/questions/5208089/are-there-any-test-spy-libraries-available-for-objective-c) [complaining](https://github.com/searls/gimme) about the nomenclature of test doubles. One reason: when test double libraries conflate stubbing and verifying, developers not versed in Test Double Science™ get confused more frequently.
