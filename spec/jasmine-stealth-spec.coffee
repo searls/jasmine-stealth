@@ -127,3 +127,28 @@ describe "jasmine-stealth", ->
 
       it "returns the call we want", ->
         expect(result).toBe spy.calls[2]
+
+  describe "jasmine.createStubObj", ->
+    context "used just like createSpyObj", ->
+      beforeEach ->
+        @subject = jasmine.createStubObj('foo',['a','b'])
+        @subject.a()
+        @subject.b()
+
+      it "creates a spy", ->
+        expect(@subject.a).toHaveBeenCalled()
+
+      it "creates b spy", ->
+        expect(@subject.b).toHaveBeenCalled()
+
+    context "passed an obj literal", ->
+      beforeEach ->
+        @subject = jasmine.createStubObj 'foo',
+          a: 5
+          b: -> 8
+
+      it "returns a simple value", ->
+        expect(@subject.a()).toBe(5)
+
+      it "invokes a provided function", ->
+        expect(@subject.b()).toBe(8)

@@ -32,7 +32,7 @@ describe("multiple stubbings", function() {
   it("stubs the second too", function() {
     expect(someSpy("panda",1)).toBe("sad");
   });
-  
+
   it("doesn't return anything when a stubbing isn't satisfied",function(){
     expect(someSpy("anything else at all")).not.toBeDefined();
   });
@@ -66,8 +66,27 @@ barCall.args[1]() //invoke the function argument on that call (presumably to tes
 
 You can also pass mostRecentCallThat a context (a value for `this` if the truth test needs access to a `this` object.)
 
+## #createStubObj
 
-## Stub aliases
+Sometimes you want a fake object that stubs multiple functions. Jasmine provides `jasmine.createSpyObj`, which takes a name and an array of function names as parameters, but it doesn't make it any easier to set up stubbings for each of those passed functions.
+
+Here's an example:
+
+``` javascript
+
+var person = jasmine.createStubObj('person',{
+  name: "Steve",
+  salary: 1.00,
+  stealAnIdea: function(){ throw "I'm going to sue you!"; }
+});
+
+```
+
+Following the above, `person.name()` is a normal jasmine spy configured to return steve (with `andReturn`). Likewise, invoking `person.salary()` will return `1.00`. You can also pass in functions as stubs, which will be passed to `andCallFake`; therefore, invoking `person.stealAnIdea()` will throw an exception.
+
+*Disclaimer: If you find yourself setting up many functions on a stub, beware: complex stubs are smell that there's excessive coupling between the code under test and the dependency being faked.*
+
+## Other stub aliases
 
 I can [often](http://searls.heroku.com/2011/06/03/whats-wrong-with-rubys-test-doubles/) [be](https://github.com/pivotal/jasmine/issues/88#issuecomment-2132975) [found](http://stackoverflow.com/questions/5208089/are-there-any-test-spy-libraries-available-for-objective-c) [complaining](https://github.com/searls/gimme) about the nomenclature of test doubles. One reason: when test double libraries conflate stubbing and verifying, developers not versed in Test Double Science™ get confused more frequently.
 
@@ -96,6 +115,8 @@ beforeEach(function(){
 ```
 
 That might help the reader figure out your intent, but obviously you're free to take it or leave it.
+
+
 
 ## Future plans
 
