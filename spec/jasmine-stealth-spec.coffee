@@ -70,6 +70,15 @@ describe "jasmine-stealth", ->
       it "satisfies that stubbing too", ->
         expect(spy(1, 1, 2, 3, 5)).toBe "fib"
 
+    context "stubbing a conditional call fake", ->
+      beforeEach ->
+        @fake = jasmine.createSpy("fake")
+        spy.when("panda").thenCallFake(@fake)
+        spy("panda")
+
+      it "calls the fake function", ->
+        expect(@fake).toHaveBeenCalled()
+
     context "default andReturn plus some conditional stubbing", ->
       beforeEach ->
         spy.andReturn "football"
