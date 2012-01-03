@@ -41,6 +41,18 @@ describe("multiple stubbings", function() {
 
 It's worth noting that Jasmine's matchers will work with when-thenReturn (see the usage of `jasmine#any` above).
 
+### thenCallFake
+
+You can also use `thenCallFake` (just like jasmine's `andCallFake` on vanilla spies).
+
+``` javascript
+someSpy.when("correct","params").thenCallFake(function(){ window.globalsRock = true; });
+
+someSpy("correct","params");
+
+expect(window.globalsRock).toBe(true);
+```
+
 ## mostRecentCallThat
 
 Sometimes it's helpful to look for a certain call based on some arbitrary criteria (usually the arguments it was passed with).
