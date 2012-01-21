@@ -1,0 +1,33 @@
+{
+  "name": "jasmine-stealth",
+  "description": "Various helpers for Jasmine spies",
+  "version": "0.0.6",
+  "keywords": [
+    "jasmine",
+    "bdd"
+  ],
+  "dependencies": {
+    "https://github.com/pivotal/jasmine": "Any"
+  },
+  "bugs": {
+    "web": "https://github.com/searls/jasmine-stealth/issues"
+  },
+  "repositories": [
+    {
+      "type": "git",
+      "url": "https://github.com/searls/jasmine-stealth.git"
+    }
+  ],
+  "licenses": [
+    {
+      "name": "Apache License 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0"
+    }
+  ],
+  "homepage": "https://github.com/searls/jasmine-stealth",
+  "maintainers":[ {
+     "name": "Justin Searls",
+     "email": "searls@gmail.com",
+     "web": "http://about.me/searls",
+  }]
+}
