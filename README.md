@@ -53,6 +53,52 @@ someSpy("correct","params");
 expect(window.globalsRock).toBe(true);
 ```
 
+## argThat matcher
+
+The problem:
+Jasmine currently only comes with one matcher out-of-the-box, `jasmine.any()`. You can pass a type to it (a la `jasmine.any(Number)`) in any situation where
+a variable is going to be evaluated with Jasmine's internal deep-equals function, such as with `expect().toEqual()` or `expect().toHaveBeenCalledWith()`.
+
+Here's an passing example that uses jasmine.any():
+
+``` javascript
+var panda = {
+  name: "Lulu"
+}
+
+expect(panda).toEqual({
+  name: jasmine.any(String)
+});
+```
+
+What if we wanted to specify more than just the type of the argument, but we didn't want to (or weren't able to) specify the argument's exact name? That's why jasmine-stealth includes a new matcher: `argThat`.
+
+Say that we wanted the panda's name was shorter than 5 characters? Well, now we can:
+
+``` javascript
+expect(panda).toEqual({
+  name: jasmine.argThat(function(arg){ return arg.length < 5; })
+})
+```
+
+Of course, this looks a little nicer in terser CoffeeScript:
+
+``` coffee
+expect(panda).toEqual
+  name: jasmine.argThat((arg) -> arg.length < 5)
+```
+
+`argThat` will also work in a spy's `toHaveBeenCalledWith` expectation, like so:
+
+``` coffee
+spy = jasmine.createSpy()
+
+spy(54)
+
+expect(spy).toHaveBeenCalledWith jasmine.argThat (arg) -> arg < 100
+expect(spy).not.toHaveBeenCalledWith jasmine.argThat (arg) -> arg > 60
+```
+
 ## mostRecentCallThat
 
 Sometimes it's helpful to look for a certain call based on some arbitrary criteria (usually the arguments it was passed with).
