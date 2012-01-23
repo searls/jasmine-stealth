@@ -161,3 +161,30 @@ describe "jasmine-stealth", ->
 
       it "invokes a provided function", ->
         expect(@subject.b()).toBe(8)
+
+  describe "jasmine.argThat (jasmine.Matchers.ArgThat)", ->
+    context "with when()", ->
+      Given -> @spy = jasmine.createSpy()
+      Given -> @spy.when(jasmine.argThat (arg) -> arg > 5).thenReturn("YAY")
+      Given -> @spy.when(jasmine.argThat (arg) -> arg < 3).thenReturn("BOO")
+
+      Then -> @spy(1) == "BOO"
+      Then -> @spy(4) == undefined
+      Then -> @spy(8) == "YAY"
+
+
+    context "with a spy arg, using toHaveBeenCalledWith", ->
+      Given -> @spy = jasmine.createSpy()
+      When -> @spy(5)
+      Then -> expect(@spy).toHaveBeenCalledWith(jasmine.argThat (arg) -> arg < 6)
+      Then -> expect(@spy).not.toHaveBeenCalledWith(jasmine.argThat (arg) -> arg > 5)
+
+    context "passes the equals contract", ->
+      Then -> true == jasmine.getEnv().equals_(5, jasmine.argThat (arg) -> arg == 5)
+      Then -> false == jasmine.getEnv().equals_(5, jasmine.argThat (arg) -> arg == 4)
+      Then -> false == jasmine.getEnv().equals_(5, jasmine.argThat (arg) -> arg != 5)
+
+
+
+
+

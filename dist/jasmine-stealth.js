@@ -1,5 +1,13 @@
+
+/*
+jasmine-stealth Makes Jasmine spies a bit more robust
+site: https://github.com/searls/jasmine-stealth
+*/
+
 (function() {
-  var isFunction;
+  var isFunction,
+    __hasProp = Object.prototype.hasOwnProperty,
+    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
 
   isFunction = function(thing) {
     return Object.prototype.toString.call(thing) === "[object Function]";
@@ -74,6 +82,26 @@
       }
       i--;
     }
+  };
+
+  jasmine.Matchers.ArgThat = (function(_super) {
+
+    __extends(ArgThat, _super);
+
+    function ArgThat(matcher) {
+      this.matcher = matcher;
+    }
+
+    ArgThat.prototype.matches = function(actual) {
+      return this.matcher(actual);
+    };
+
+    return ArgThat;
+
+  })(jasmine.Matchers.Any);
+
+  jasmine.argThat = function(expected) {
+    return new jasmine.Matchers.ArgThat(expected);
   };
 
 }).call(this);

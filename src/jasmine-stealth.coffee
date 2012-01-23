@@ -1,3 +1,7 @@
+###
+jasmine-stealth Makes Jasmine spies a bit more robust
+site: https://github.com/searls/jasmine-stealth
+###
 isFunction = (thing) ->
   Object::toString.call(thing) is "[object Function]"
 
@@ -53,3 +57,12 @@ jasmine.Spy::mostRecentCallThat = (callThat, context) ->
   while i >= 0
     return @calls[i]  if callThat.call(context or this, @calls[i]) is true
     i--
+
+class jasmine.Matchers.ArgThat extends jasmine.Matchers.Any
+  constructor: (matcher) ->
+    @matcher = matcher
+
+  matches: (actual) ->
+    @matcher(actual)
+
+jasmine.argThat = (expected) -> new jasmine.Matchers.ArgThat(expected)
