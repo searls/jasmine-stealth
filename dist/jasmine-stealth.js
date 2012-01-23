@@ -5,7 +5,7 @@ site: https://github.com/searls/jasmine-stealth
 */
 
 (function() {
-  var isFunction,
+  var isFunction, whatToDoWhenTheSpyGetsCalled,
     __hasProp = Object.prototype.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
 
@@ -38,18 +38,23 @@ site: https://github.com/searls/jasmine-stealth
     }
   };
 
-  jasmine.Spy.prototype.when = function() {
-    var addStubbing, ifThis, priorStubbing, spy;
-    spy = this;
-    ifThis = jasmine.util.argsToArray(arguments);
-    spy._stealth_stubbings = spy._stealth_stubbings || [];
+  whatToDoWhenTheSpyGetsCalled = function(spy) {
+    var matchesStub, priorStubbing;
+    matchesStub = function(stubbing, args, context) {
+      switch (stubbing.type) {
+        case "args":
+          return jasmine.getEnv().equals_(stubbing.ifThis, jasmine.util.argsToArray(args));
+        case "context":
+          return jasmine.getEnv().equals_(stubbing.ifThis, context);
+      }
+    };
     priorStubbing = spy.plan();
-    spy.andCallFake(function() {
+    return spy.andCallFake(function() {
       var i, stubbing;
       i = 0;
       while (i < spy._stealth_stubbings.length) {
         stubbing = spy._stealth_stubbings[i];
-        if (jasmine.getEnv().equals_(stubbing.ifThis, jasmine.util.argsToArray(arguments))) {
+        if (matchesStub(stubbing, arguments, this)) {
           if (Object.prototype.toString.call(stubbing.thenThat) === "[object Function]") {
             return stubbing.thenThat();
           } else {
@@ -60,8 +65,36 @@ site: https://github.com/searls/jasmine-stealth
       }
       return priorStubbing;
     });
+  };
+
+  jasmine.Spy.prototype.whenContext = function(context) {
+    var addStubbing, spy;
+    spy = this;
+    spy._stealth_stubbings || (spy._stealth_stubbings = []);
+    whatToDoWhenTheSpyGetsCalled(spy);
     addStubbing = function(thenThat) {
       spy._stealth_stubbings.push({
+        type: 'context',
+        ifThis: context,
+        thenThat: thenThat
+      });
+      return spy;
+    };
+    return {
+      thenReturn: addStubbing,
+      thenCallFake: addStubbing
+    };
+  };
+
+  jasmine.Spy.prototype.when = function() {
+    var addStubbing, ifThis, spy;
+    spy = this;
+    ifThis = jasmine.util.argsToArray(arguments);
+    spy._stealth_stubbings || (spy._stealth_stubbings = []);
+    whatToDoWhenTheSpyGetsCalled(spy);
+    addStubbing = function(thenThat) {
+      spy._stealth_stubbings.push({
+        type: 'args',
         ifThis: ifThis,
         thenThat: thenThat
       });

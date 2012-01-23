@@ -23,17 +23,18 @@ jasmine.createStubObj = (baseName, stubbings) ->
         obj[name].andReturn stubbing
     obj
 
-jasmine.Spy::when = ->
-  spy = this
-  ifThis = jasmine.util.argsToArray(arguments)
-  spy._stealth_stubbings = spy._stealth_stubbings or []
+whatToDoWhenTheSpyGetsCalled = (spy) ->
+  matchesStub = (stubbing,args,context) ->
+    switch stubbing.type
+      when "args" then jasmine.getEnv().equals_(stubbing.ifThis, jasmine.util.argsToArray(args))
+      when "context" then jasmine.getEnv().equals_(stubbing.ifThis,context)
+
   priorStubbing = spy.plan()
   spy.andCallFake ->
     i = 0
-
     while i < spy._stealth_stubbings.length
       stubbing = spy._stealth_stubbings[i]
-      if jasmine.getEnv().equals_(stubbing.ifThis, jasmine.util.argsToArray(arguments))
+      if matchesStub(stubbing,arguments,this)
         if Object::toString.call(stubbing.thenThat) is "[object Function]"
           return stubbing.thenThat()
         else
@@ -41,8 +42,32 @@ jasmine.Spy::when = ->
       i++
     priorStubbing
 
+
+jasmine.Spy::whenContext = (context) ->
+  spy = this
+  spy._stealth_stubbings ||= []
+  whatToDoWhenTheSpyGetsCalled(spy)
+
   addStubbing = (thenThat) ->
     spy._stealth_stubbings.push
+      type: 'context'
+      ifThis: context
+      thenThat: thenThat
+    spy
+
+  thenReturn: addStubbing
+  thenCallFake: addStubbing
+
+
+jasmine.Spy::when = ->
+  spy = this
+  ifThis = jasmine.util.argsToArray(arguments)
+  spy._stealth_stubbings ||= []
+  whatToDoWhenTheSpyGetsCalled(spy)
+
+  addStubbing = (thenThat) ->
+    spy._stealth_stubbings.push
+      type: 'args'
       ifThis: ifThis
       thenThat: thenThat
 

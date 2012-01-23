@@ -108,6 +108,18 @@ describe "jasmine-stealth", ->
         it "returns the specific stubbed value", ->
           expect(spy("bored")).toBe "baseball"
 
+  describe "#whenContext", ->
+    Given -> @ctx = "A"
+    Given -> @spy = jasmine.createSpy().whenContext(@ctx).thenReturn("foo")
+
+    context "when satisfied", ->
+      When -> @result = @spy.call(@ctx)
+      Then -> @result == "foo"
+
+    context "when not satisfied", ->
+      When -> @result = @spy.call("B")
+      Then -> @result == undefined
+
   describe "#mostRecentCallThat", ->
     spy = undefined
     beforeEach ->
