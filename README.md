@@ -41,6 +41,16 @@ describe("multiple stubbings", function() {
 
 It's worth noting that Jasmine's matchers will work with when-thenReturn (see the usage of `jasmine#any` above).
 
+### "whenContext"
+
+Sometimes you want conditional stubbing, but based on the value of `this` as opposed to the arguments passed to a method. jQuery plugins are a common example:
+
+``` javascript
+spyOn($.fn,'show');
+
+$.fn.show.whenContext($('body')).thenReturn("a completely contrived example.")
+```
+
 ### thenCallFake
 
 You can also use `thenCallFake` (just like jasmine's `andCallFake` on vanilla spies).
