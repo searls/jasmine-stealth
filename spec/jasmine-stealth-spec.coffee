@@ -196,6 +196,22 @@ describe "jasmine-stealth", ->
       Then -> false == jasmine.getEnv().equals_(5, jasmine.argThat (arg) -> arg == 4)
       Then -> false == jasmine.getEnv().equals_(5, jasmine.argThat (arg) -> arg != 5)
 
+  describe "jasmine.captor, #capture() & .value", ->
+
+    Given -> @captor = jasmine.captor()
+    Given -> @spy = jasmine.createSpy()
+    When -> @spy("foo!")
+    Then( -> expect(@spy).toHaveBeenCalledWith(@captor.capture()))
+    .Then( -> @captor.value == "foo!")
+
+    it "readme example", ->
+      captor = jasmine.captor()
+      save = jasmine.createSpy()
+
+      save({ name: "foo", phone: "123"});
+
+      expect(save).toHaveBeenCalledWith(captor.capture())
+      expect(captor.value.name).toBe("foo")
 
 
 

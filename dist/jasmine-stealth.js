@@ -5,7 +5,7 @@ site: https://github.com/searls/jasmine-stealth
 */
 
 (function() {
-  var isFunction, whatToDoWhenTheSpyGetsCalled,
+  var Captor, isFunction, whatToDoWhenTheSpyGetsCalled,
     __hasProp = Object.prototype.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor; child.__super__ = parent.prototype; return child; };
 
@@ -135,6 +135,39 @@ site: https://github.com/searls/jasmine-stealth
 
   jasmine.argThat = function(expected) {
     return new jasmine.Matchers.ArgThat(expected);
+  };
+
+  jasmine.Matchers.Capture = (function(_super) {
+
+    __extends(Capture, _super);
+
+    function Capture(captor) {
+      this.captor = captor;
+    }
+
+    Capture.prototype.matches = function(actual) {
+      this.captor.value = actual;
+      return true;
+    };
+
+    return Capture;
+
+  })(jasmine.Matchers.Any);
+
+  Captor = (function() {
+
+    function Captor() {}
+
+    Captor.prototype.capture = function() {
+      return new jasmine.Matchers.Capture(this);
+    };
+
+    return Captor;
+
+  })();
+
+  jasmine.captor = function() {
+    return new Captor();
   };
 
 }).call(this);

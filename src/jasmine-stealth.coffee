@@ -83,6 +83,8 @@ jasmine.Spy::mostRecentCallThat = (callThat, context) ->
     return @calls[i]  if callThat.call(context or this, @calls[i]) is true
     i--
 
+## Matchers
+
 class jasmine.Matchers.ArgThat extends jasmine.Matchers.Any
   constructor: (matcher) ->
     @matcher = matcher
@@ -91,3 +93,18 @@ class jasmine.Matchers.ArgThat extends jasmine.Matchers.Any
     @matcher(actual)
 
 jasmine.argThat = (expected) -> new jasmine.Matchers.ArgThat(expected)
+
+
+class jasmine.Matchers.Capture extends jasmine.Matchers.Any
+  constructor: (captor) ->
+    @captor = captor
+
+  matches: (actual) ->
+    @captor.value = actual
+    true
+
+class Captor
+  capture: ->
+    new jasmine.Matchers.Capture(@)
+
+jasmine.captor = () -> new Captor()

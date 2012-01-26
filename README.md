@@ -4,6 +4,8 @@ jasmine-stealth is a [Jasmine](https://github.com/pivotal/jasmine) helper that a
 
 **[Download the latest version here](https://github.com/searls/jasmine-stealth/archives/master)**.
 
+# Conditional Stubbing
+
 ## "when" + "thenReturn"
 
 One annoyance with Jasmine spies is the default semantics of `Spy#andReturn` limits you to a single return value, regardless of which arguments a spy is invoked with. However, the arguments a spy is called with *usually matter* to the spec. None of your out-of-the-box options are great:
@@ -63,7 +65,7 @@ someSpy("correct","params");
 expect(window.globalsRock).toBe(true);
 ```
 
-## argThat matcher
+# Custom matchers
 
 The problem:
 Jasmine currently only comes with one matcher out-of-the-box, `jasmine.any()`. You can pass a type to it (a la `jasmine.any(Number)`) in any situation where
@@ -80,6 +82,10 @@ expect(panda).toEqual({
   name: jasmine.any(String)
 });
 ```
+
+jasmine-stealth adds a couple old favorite custom matchers, jasmine.argThat() and jasmine.captor()
+
+## argThat matcher
 
 What if we wanted to specify more than just the type of the argument, but we didn't want to (or weren't able to) specify the argument's exact name? That's why jasmine-stealth includes a new matcher: `argThat`.
 
@@ -108,6 +114,43 @@ spy(54)
 expect(spy).toHaveBeenCalledWith jasmine.argThat (arg) -> arg < 100
 expect(spy).not.toHaveBeenCalledWith jasmine.argThat (arg) -> arg > 60
 ```
+
+## Argument Captors
+
+What about situations where you want to set expectations about something that got passed in as an argument to your spy?
+
+At this point in the readme, you could accomplish that in a few ways:
+
+1. You could interrogate the spy's `calls` array
+2. You could use `argThat()` and write a callback function that contains the expectation
+3. You could use jasmine-stealth's `jasmine.captor()` to capture the value during your normal `toHaveBeenCalledWith` expectation
+
+An argument captor is a special subtype of an argument matcher. Here's an example of how you might use it:
+
+``` javascript
+
+//In our spec code's setup
+var captor = jasmine.captor()
+var save = jasmine.createSpy()
+
+//Meanwhile, in our production code
+save({ name: "foo", phone: "123"});
+
+//Back in our spec
+expect(save).toHaveBeenCalledWith(captor.capture())
+expect(captor.value.name).toBe("foo")
+
+```
+
+Argument captors are especially useful in situations where your spec is especially concerned with the
+ details of what gets passed to some method your code depends on. Although, frequent use of arg captors may
+ be a smell that your code is in the (bad) habit of breaking
+  [command-query separation](http://en.wikipedia.org/wiki/Command-query_separation).
+
+
+
+
+# Other stuff
 
 ## mostRecentCallThat
 
