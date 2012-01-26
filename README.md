@@ -83,11 +83,11 @@ expect(panda).toEqual({
 });
 ```
 
-jasmine-stealth adds a couple of my favorite custom matchers from other test double libraries: jasmine.argThat() and jasmine.captor()
+jasmine-stealth adds a couple of my favorite custom matchers from other test double libraries: `jasmine.argThat()` and `jasmine.captor()`
 
 ## argThat matcher
 
-What if we wanted to specify more than just the type of the argument, but we didn't want (or weren't able) to specify the argument's exact value? That's why jasmine-stealth includes a new matcher: `argThat`.
+What if we wanted to specify more than just the type of the argument, but we didn't want (or weren't able) to specify the argument's exact value? That's why jasmine-stealth includes a new matcher: `jasmine.argThat()`.
 
 Say that we wanted the panda's name was shorter than 5 characters? Well, now we can:
 
@@ -104,7 +104,7 @@ expect(panda).toEqual
   name: jasmine.argThat((arg) -> arg.length < 5)
 ```
 
-`argThat` will also work in a spy's `toHaveBeenCalledWith` expectation, like so:
+`jasmine.argThat()` will also work in a spy's `toHaveBeenCalledWith` expectation, like so:
 
 ``` coffee
 spy = jasmine.createSpy()
@@ -118,7 +118,7 @@ expect(spy).not.toHaveBeenCalledWith jasmine.argThat (arg) -> arg > 60
 ## Argument Captors
 
 A different approach to the same problem as above is to use argument captors. It's just another style that
-may read better in some specs than `argThat`.
+may read better in some specs than `jasmine.argThat()`.
 
 Here's a contrived example of the captor API:
 
@@ -146,7 +146,7 @@ Argument captors are useful in situations where your spec is especially concerne
 To summarize, you now have several ways to get at the values that your code passes to your spec's spies:
 
   1. You could interrogate the spy with Jasmine's built-in properties (a la `mySpy.calls[0].args[0] === "foo"`)
-  2. You could use `argThat()` and write a callback function that implies some expectation
+  2. You could use `jamine.argThat()` and write a callback function that implies some expectation
   3. You could use jasmine-stealth's `jasmine.captor()` to capture the value during your normal `toHaveBeenCalledWith` expectation and set up any number of expectations against it.
 
 
