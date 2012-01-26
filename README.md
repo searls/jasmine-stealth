@@ -41,11 +41,11 @@ describe("multiple stubbings", function() {
 });
 ```
 
-It's worth noting that Jasmine's matchers will work with when-thenReturn (see the usage of `jasmine#any` above).
+It's worth noting that Jasmine matchers will work with when-thenReturn (see the usage of `jasmine#any` above).
 
 ### "whenContext"
 
-Sometimes you want conditional stubbing, but based on the value of `this` as opposed to the arguments passed to a method. jQuery plugins are a common example:
+Sometimes you want conditional stubbing, but based on the value of `this` as opposed to the arguments passed to a method. Specifying interactions with jQuery plugins is where I seem to need this most. For that case, you can use `whenContext` in place of `when`, like so:
 
 ``` javascript
 spyOn($.fn,'show');
@@ -83,11 +83,11 @@ expect(panda).toEqual({
 });
 ```
 
-jasmine-stealth adds a couple old favorite custom matchers, jasmine.argThat() and jasmine.captor()
+jasmine-stealth adds a couple of my favorite custom matchers from other test double libraries: jasmine.argThat() and jasmine.captor()
 
 ## argThat matcher
 
-What if we wanted to specify more than just the type of the argument, but we didn't want to (or weren't able to) specify the argument's exact name? That's why jasmine-stealth includes a new matcher: `argThat`.
+What if we wanted to specify more than just the type of the argument, but we didn't want (or weren't able) to specify the argument's exact value? That's why jasmine-stealth includes a new matcher: `argThat`.
 
 Say that we wanted the panda's name was shorter than 5 characters? Well, now we can:
 
@@ -117,15 +117,10 @@ expect(spy).not.toHaveBeenCalledWith jasmine.argThat (arg) -> arg > 60
 
 ## Argument Captors
 
-What about situations where you want to set expectations about something that got passed in as an argument to your spy?
+A different approach to the same problem as above is to use argument captors. It's just another style that
+may read better in some specs than `argThat`.
 
-At this point in the readme, you could accomplish that in a few ways:
-
-1. You could interrogate the spy's `calls` array
-2. You could use `argThat()` and write a callback function that contains the expectation
-3. You could use jasmine-stealth's `jasmine.captor()` to capture the value during your normal `toHaveBeenCalledWith` expectation
-
-An argument captor is a special subtype of an argument matcher. Here's an example of how you might use it:
+Here's a contrived example of the captor API:
 
 ``` javascript
 
@@ -142,15 +137,20 @@ expect(captor.value.name).toBe("foo")
 
 ```
 
-Argument captors are especially useful in situations where your spec is especially concerned with the
- details of what gets passed to some method your code depends on. Although, frequent use of arg captors may
- be a smell that your code is in the (bad) habit of breaking
-  [command-query separation](http://en.wikipedia.org/wiki/Command-query_separation).
+So, when you want to capture an argument value, you first create a captor with `jasmine.captor()`, then in your expectation on the call to the spy, you use `jasmine.capture()`, and then the captured value will be available on the captor's `value` property.
+
+Argument captors are useful in situations where your spec is especially concerned with the details of what gets passed to some method your code depends on. They're a very handy tool in the toolbox, but keep in mind that if you find yourself frequently relying on argument captors to specify your code, it may be a smell that your code is in the (bad) habit of breaking [command-query separation](http://en.wikipedia.org/wiki/Command-query_separation).
+
+### Summarizing matchers
+
+To summarize, you now have several ways to get at the values that your code passes to your spec's spies:
+
+  1. You could interrogate the spy with Jasmine's built-in properties (a la `mySpy.calls[0].args[0] === "foo"`)
+  2. You could use `argThat()` and write a callback function that implies some expectation
+  3. You could use jasmine-stealth's `jasmine.captor()` to capture the value during your normal `toHaveBeenCalledWith` expectation and set up any number of expectations against it.
 
 
-
-
-# Other stuff
+# Other goodies jasmine-stealth adds
 
 ## mostRecentCallThat
 
@@ -226,9 +226,3 @@ beforeEach(function(){
 ```
 
 That might help the reader figure out your intent, but obviously you're free to take it or leave it.
-
-
-
-## Future plans
-
-I'm interested in adding additional Matchers and coming up with a creative way to eliminate the some keystrokes (say, with `any` instead of `jasmine.any`).
