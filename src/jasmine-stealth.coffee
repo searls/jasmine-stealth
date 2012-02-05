@@ -1,5 +1,6 @@
 ###
-jasmine-stealth Makes Jasmine spies a bit more robust
+jasmine-stealth @@VERSION@@
+Makes Jasmine spies a bit more robust
 site: https://github.com/searls/jasmine-stealth
 ###
 isFunction = (thing) ->
