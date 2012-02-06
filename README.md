@@ -1,5 +1,8 @@
 # jasmine-stealth
 
+[![Build Status](https://secure.travis-ci.org/searls/jasmine-stealth.png)](http://travis-ci.org/searls/jasmine-stealth])
+
+
 jasmine-stealth is a [Jasmine](https://github.com/pivotal/jasmine) helper that adds a little sugar to Jasmine's spies.
 
 **[Download the latest version here](https://github.com/searls/jasmine-stealth/archives/master)**.
