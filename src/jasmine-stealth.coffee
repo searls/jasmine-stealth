@@ -7,9 +7,40 @@ root = this
 
 #private helpers
 
-isFunction = (thing) ->
-  Object::toString.call(thing) is "[object Function]"
+_ = (obj) ->
+  each: (iterator) ->
+    iterator(item) for item in obj
+  isFunction: ->
+    Object::toString.call(obj) is "[object Function]"
+  isString: ->
+    Object::toString.call(obj) is "[object String]"
 
+#spyOnConstructor
+
+root.spyOnConstructor = (owner, classToFake, methodsToSpy = []) ->
+  methodsToSpy = [methodsToSpy] if _(methodsToSpy).isString()
+
+  spies = constructor: jasmine.createSpy("#{classToFake}'s constructor")
+  fakeClass = class
+    constructor: -> spies.constructor.apply(@, arguments)
+
+  _(methodsToSpy).each (methodName) ->
+    spies[methodName] = jasmine.createSpy("#{classToFake}##{methodName}")
+    fakeClass.prototype[methodName] = -> spies[methodName].apply(@,arguments)
+
+  fake(owner, classToFake, fakeClass)
+  spies
+
+unfakes = []
+afterEach ->
+  _(unfakes).each (u) -> u()
+  unfakes = []
+
+fake = (owner, thingToFake, newThing) ->
+  originalThing = owner[thingToFake]
+  owner[thingToFake] = newThing
+  unfakes.push ->
+    owner[thingToFake] = originalThing
 
 #stub nomenclature
 
@@ -23,7 +54,7 @@ jasmine.createStubObj = (baseName, stubbings) ->
     for name of stubbings
       stubbing = stubbings[name]
       obj[name] = jasmine.createSpy(baseName + "." + name)
-      if isFunction(stubbing)
+      if _(stubbing).isFunction()
         obj[name].andCallFake stubbing
       else
         obj[name].andReturn stubbing

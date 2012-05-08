@@ -219,6 +219,44 @@ describe "jasmine-stealth", ->
       expect(save).toHaveBeenCalledWith(captor.capture())
       expect(captor.value.name).toBe("foo")
 
+  describe "window.spyOnConstructor", ->
+    describe "a simple class", ->
+      class window.Pizza
+        makeSlice: -> "nah"
+
+      context "spying on the constructor - string method arg", ->
+        Given -> @pizzaSpies = spyOnConstructor(window, "Pizza", "makeSlice")
+        When -> new Pizza("banz").makeSlice("lol")
+        Then -> expect(@pizzaSpies.constructor).toHaveBeenCalledWith("banz")
+        Then -> expect(@pizzaSpies.makeSlice).toHaveBeenCalledWith("lol")
+
+      context "spying on the constructor - array method arg", ->
+        Given -> @pizzaSpies = spyOnConstructor(window, "Pizza", ["makeSlice"])
+        When -> new Pizza("banz").makeSlice("lol")
+        Then -> expect(@pizzaSpies.constructor).toHaveBeenCalledWith("banz")
+        Then -> expect(@pizzaSpies.makeSlice).toHaveBeenCalledWith("lol")
+
+      context "normal operation", ->
+        Given -> @pizza = new Pizza
+        Then -> @pizza.makeSlice() == "nah"
+
+    describe "a collaboration", ->
+      class window.View
+        serialize: ->
+          model: new Model().toJSON()
+      class window.Model
+
+      context "stubbing the model's method", ->
+        Given -> @modelSpies = spyOnConstructor(window, "Model", "toJSON")
+        Given -> @subject = new window.View()
+        Given -> @modelSpies.toJSON.andReturn("some json")
+        When -> @result = @subject.serialize()
+        Then -> expect(@result).toEqual
+          model: "some json"
+
+
+
+
 
 
 

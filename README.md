@@ -68,6 +68,31 @@ someSpy("correct","params");
 expect(window.globalsRock).toBe(true);
 ```
 
+# Spying on constructors
+
+jasmine-stealth adds a facility to spy on a constructor. That way, when your subject code
+that's under test instantiates a collaborator, you can access its methods as a collection of spies.
+
+Say we have a `view` that instantiates a `model`. Here's an example spec that uses `spyOnConstructor` to isolate the view from the model.
+
+``` coffee
+#source
+class window.View
+  serialize: ->
+    model: new Model().toJSON()
+class window.Model
+
+#specs
+describe "View", ->
+  describe "#serialize", ->
+    Given -> @modelSpies = spyOnConstructor(window, "Model", "toJSON")
+    Given -> @subject = new window.View()
+    Given -> @modelSpies.toJSON.andReturn("some json")
+    When -> @result = @subject.serialize()
+    Then -> expect(@result).toEqual
+      model: "some json"
+```
+
 # Custom matchers
 
 The problem:
