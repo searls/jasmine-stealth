@@ -85,7 +85,7 @@ class window.Model
 #specs
 describe "View", ->
   describe "#serialize", ->
-    Given -> @modelSpies = spyOnConstructor(window, "Model", "toJSON")
+    Given -> @modelSpies = spyOnConstructor(window, "Model", ["toJSON"])
     Given -> @subject = new window.View()
     Given -> @modelSpies.toJSON.andReturn("some json")
     When -> @result = @subject.serialize()
