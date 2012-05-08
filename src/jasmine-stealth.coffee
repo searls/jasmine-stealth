@@ -3,12 +3,15 @@ jasmine-stealth @@VERSION@@
 Makes Jasmine spies a bit more robust
 site: https://github.com/searls/jasmine-stealth
 ###
+root = this
+
 isFunction = (thing) ->
   Object::toString.call(thing) is "[object Function]"
 
-beforeEach ->
-  @stubFor = @spyOn
 
+#stub nomenclature
+
+root.stubFor = root.spyOn
 jasmine.createStub = jasmine.createSpy
 jasmine.createStubObj = (baseName, stubbings) ->
   if stubbings.constructor is Array

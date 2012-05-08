@@ -5,8 +5,15 @@ describe "jasmine-stealth", ->
     it "creates createStub as an alias of createSpy", ->
       expect(jasmine.createStub).toBe jasmine.createSpy
 
-    it "creates stubFor as an alias of spyOn", ->
-      expect(@stubFor).toBe @spyOn
+    describe ".stubFor", ->
+      context "existing method", ->
+        When -> stubFor(window, "prompt").andReturn("lol")
+        Then -> window.prompt() == "lol"
+
+      context "non-existing method", ->
+        Given -> @obj = { woot: null }
+        When -> spyOn(@obj, "woot").andReturn("troll")
+        Then -> @obj.woot() == "troll"
 
   describe "#when", ->
     spy = undefined
