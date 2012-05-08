@@ -5,7 +5,7 @@
 
 jasmine-stealth is a [Jasmine](https://github.com/pivotal/jasmine) helper that adds a little sugar to Jasmine's spies.
 
-**[Download the latest version here](https://github.com/searls/jasmine-stealth/archives/master)**.
+**[Download the latest version here](https://raw.github.com/searls/jasmine-stealth/master/dist/jasmine-stealth.js)**.
 
 # Conditional Stubbing
 
