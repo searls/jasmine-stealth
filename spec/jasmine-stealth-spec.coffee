@@ -204,7 +204,6 @@ describe "jasmine-stealth", ->
       Then -> false == jasmine.getEnv().equals_(5, jasmine.argThat (arg) -> arg != 5)
 
   describe "jasmine.captor, #capture() & .value", ->
-
     Given -> @captor = jasmine.captor()
     Given -> @spy = jasmine.createSpy()
     When -> @spy("foo!")

@@ -5,6 +5,8 @@ site: https://github.com/searls/jasmine-stealth
 ###
 root = this
 
+#private helpers
+
 isFunction = (thing) ->
   Object::toString.call(thing) is "[object Function]"
 
