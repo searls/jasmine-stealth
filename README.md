@@ -165,7 +165,7 @@ expect(captor.value.name).toBe("foo")
 
 ```
 
-So, when you want to capture an argument value, you first create a captor with `jasmine.captor()`, then in your expectation on the call to the spy, you use `jasmine.capture()`, and then the captured value will be available on the captor's `value` property.
+So, when you want to capture an argument value, you first create a captor with `jasmine.captor()`, then in your expectation on the call to the spy, you call the captor's `capture()` function in place of the argument you want to capture. The captured value will be available on the captor's `value` property.
 
 Argument captors are useful in situations where your spec is especially concerned with the details of what gets passed to some method your code depends on. They're a very handy tool in the toolbox, but keep in mind that if you find yourself frequently relying on argument captors to specify your code, it may be a smell that your code is in the (bad) habit of breaking [command-query separation](http://en.wikipedia.org/wiki/Command-query_separation).
 
