@@ -126,19 +126,21 @@ class jasmine.Matchers.ArgThat extends jasmine.Matchers.Any
   constructor: (matcher) ->
     @matcher = matcher
 
-  matches: (actual) ->
+  jasmineMatches: (actual) ->
     @matcher(actual)
 
+jasmine.Matchers.ArgThat::matches = jasmine.Matchers.ArgThat::jasmineMatches #backwards compatibility for jasmine 1.1
 jasmine.argThat = (expected) -> new jasmine.Matchers.ArgThat(expected)
-
 
 class jasmine.Matchers.Capture extends jasmine.Matchers.Any
   constructor: (captor) ->
     @captor = captor
 
-  matches: (actual) ->
+  jasmineMatches: (actual) ->
     @captor.value = actual
     true
+
+jasmine.Matchers.Capture::matches = jasmine.Matchers.Capture::jasmineMatches #backwards compatibility for jasmine 1.1
 
 class Captor
   capture: ->
