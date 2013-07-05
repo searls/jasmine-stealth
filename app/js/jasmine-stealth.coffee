@@ -1,8 +1,3 @@
-###
-jasmine-stealth @@VERSION@@
-Makes Jasmine spies a bit more robust
-site: https://github.com/searls/jasmine-stealth
-###
 root = this
 
 #private helpers
