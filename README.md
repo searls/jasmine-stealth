@@ -254,3 +254,16 @@ beforeEach(function(){
 ```
 
 That might help the reader figure out your intent, but obviously you're free to take it or leave it.
+
+# Using with Node.js
+
+To use this helper with Jasmine under Node.js, simply add it to your package.json with
+
+``` bash
+$ npm install jasmine-stealth --save-dev
+```
+
+And then from your spec (or in a spec helper), `require('jasmine-stealth')`. Be
+sure that it's loaded after jasmine itself is added to the `global` object, or else
+it will load `minijasminenode` which will, in turn, load jasmine
+into `global` for you (which you may not be intending).
