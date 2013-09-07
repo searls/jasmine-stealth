@@ -117,28 +117,18 @@ describe "jasmine-stealth", ->
 
   describe "jasmine.createStubObj", ->
     context "used just like createSpyObj", ->
-      beforeEach ->
-        @subject = jasmine.createStubObj('foo',['a','b'])
-        @subject.a()
-        @subject.b()
-
-      it "creates a spy", ->
-        expect(@subject.a).toHaveBeenCalled()
-
-      it "creates b spy", ->
-        expect(@subject.b).toHaveBeenCalled()
+      Given -> @subject = jasmine.createStubObj('foo',['a','b'])
+      Given -> @subject.a()
+      Given -> @subject.b()
+      Then -> expect(@subject.a).toHaveBeenCalled()
+      Then -> expect(@subject.b).toHaveBeenCalled()
 
     context "passed an obj literal", ->
-      beforeEach ->
-        @subject = jasmine.createStubObj 'foo',
-          a: 5
-          b: -> 8
-
-      it "returns a simple value", ->
-        expect(@subject.a()).toBe(5)
-
-      it "invokes a provided function", ->
-        expect(@subject.b()).toBe(8)
+      Given -> @subject = jasmine.createStubObj 'foo',
+        a: 5
+        b: -> 8
+      Then -> @subject.a() == 5
+      Then -> @subject.b() == 8
 
   describe "jasmine.argThat (jasmine.Matchers.ArgThat)", ->
     context "with when()", ->
@@ -166,8 +156,8 @@ describe "jasmine-stealth", ->
     Given -> @captor = jasmine.captor()
     Given -> @spy = jasmine.createSpy()
     When -> @spy("foo!")
-    Then( -> expect(@spy).toHaveBeenCalledWith(@captor.capture()))
-    .Then( -> @captor.value == "foo!")
+    Then -> expect(@spy).toHaveBeenCalledWith(@captor.capture())
+    And -> @captor.value == "foo!"
 
     it "readme example", ->
       captor = jasmine.captor()
