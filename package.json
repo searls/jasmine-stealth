@@ -1,6 +1,6 @@
 {
   "name": "jasmine-stealth",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "Makes Jasmine spies a bit more robust",
   "homepage": "https://github.com/searls/jasmine-stealth",
   "author": {
