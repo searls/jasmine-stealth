@@ -2,8 +2,7 @@ window.context = window.describe
 window.xcontext = window.xdescribe
 describe "jasmine-stealth", ->
   describe "aliases", ->
-    it "creates createStub as an alias of createSpy", ->
-      expect(jasmine.createStub).toBe jasmine.createSpy
+    Then -> jasmine.createStub == jasmine.createSpy
 
     describe ".stubFor", ->
       context "existing method", ->
@@ -16,104 +15,85 @@ describe "jasmine-stealth", ->
         Then -> @obj.woot() == "troll"
 
   describe "#when", ->
-    spy = undefined
-    result = undefined
-    beforeEach ->
-      spy = jasmine.createSpy("my spy")
-      result = spy.when("53").thenReturn("winning")
+    Given -> @spy = jasmine.createSpy("my spy")
 
-    it "thenReturn returns the spy", ->
-      expect(result).toBe spy
+    context "a spy is returned by then*()", ->
+      Then -> expect(@spy.when("a").thenReturn("")).toBe(@spy)
+      Then -> expect(@spy.when("a").thenCallFake((->))).toBe(@spy)
 
-    context "the stubbing is unmet", ->
-      it "returns undefined", ->
-        expect(spy("not 53")).not.toBeDefined()
+    describe "#thenReturn", ->
+      context "the stubbing is unmet", ->
+        Given -> @spy.when("53").thenReturn("yay!")
+        Then -> expect(@spy("not 53")).not.toBeDefined()
 
-    context "the stubbing is met", ->
-      it "returns the stubbed value", ->
-        expect(spy("53")).toEqual "winning"
+      context "the stubbing is met", ->
+        Given -> @spy.when("53").thenReturn("winning")
+        Then -> @spy("53") == "winning"
 
-    context "multiple stubbings exist", ->
-      beforeEach ->
-        spy.when("pirate",
-          booty: [ "jewels", jasmine.any(String) ]
-        ).thenReturn "argh!"
-        spy.when("panda", 1).thenReturn "sad"
+      context "multiple stubbings exist", ->
+        Given -> @spy.when("pirate", booty: ["jewels", jasmine.any(String)]).thenReturn("argh!")
+        Given -> @spy.when("panda", 1).thenReturn("sad")
 
-      it "stubs the first accurately", ->
-        expect(spy("pirate",
-          booty: [ "jewels", "coins" ]
-        )).toBe "argh!"
+        Then -> @spy("pirate", booty: ["jewels", "coins"]) ==  "argh!"
+        Then -> @spy("panda", 1) == "sad"
 
-      it "stubs the second too", ->
-        expect(spy("panda", 1)).toBe "sad"
+      context "complex types", ->
+        Given -> @complexType =
+          fruits: [ "apple", "berry" ]
+          yogurts:
+            greek: ->
+              "expensive"
 
-    complexType = undefined
-    beforeEach ->
-      complexType =
-        fruits: [ "apple", "berry" ]
-        yogurts:
-          greek: ->
-            "expensive"
+        context "complex return types", ->
+          Given -> @spy.when("breakfast").thenReturn(@complexType)
+          Then -> @spy("breakfast") == @complexType
 
-    context "complex return types are stubbed", ->
-      beforeEach ->
-        spy.when("breakfast").thenReturn complexType
+        context "complex argument types", ->
+          Given -> @spy.when(@complexType).thenReturn("breakfast")
+          Then -> @spy(@complexType) == "breakfast"
 
-      it "stubs precisely the same object", ->
-        expect(spy("breakfast")).toBe complexType
+      context "stubbing with multiple arguments", ->
+        Given -> @spy.when(1, 1, 2, 3, 5).thenReturn "fib"
+        Then -> @spy(1, 1, 2, 3, 5) == "fib"
 
-    context "complex argument types are stubbed", ->
-      beforeEach ->
-        spy.when(complexType).thenReturn "breakfast"
+    describe "#thenCallFake", ->
+      context "stubbing a conditional call fake", ->
+        beforeEach ->
+          @fake = jasmine.createSpy("fake")
+          @spy.when("panda").thenCallFake(@fake)
+          @spy("panda")
 
-      it "satisfies the stubbing", ->
-        expect(spy(complexType)).toBe "breakfast"
-
-    context "stubbing with multiple arguments", ->
-      beforeEach ->
-        spy.when(1, 1, 2, 3, 5).thenReturn "fib"
-
-      it "satisfies that stubbing too", ->
-        expect(spy(1, 1, 2, 3, 5)).toBe "fib"
-
-    context "stubbing a conditional call fake", ->
-      beforeEach ->
-        @fake = jasmine.createSpy("fake")
-        spy.when("panda").thenCallFake(@fake)
-        spy("panda")
-
-      it "calls the fake function", ->
-        expect(@fake).toHaveBeenCalled()
+        it "calls the fake function", ->
+          expect(@fake).toHaveBeenCalled()
 
     context "default andReturn plus some conditional stubbing", ->
       beforeEach ->
-        spy.andReturn "football"
-        spy.when("bored").thenReturn "baseball"
+        @spy.andReturn "football"
+        @spy.when("bored").thenReturn "baseball"
 
       describe "it doesn't  appear to invoke the spy", ->
         it "hasn't been called yet", ->
-          expect(spy).not.toHaveBeenCalled()
+          expect(@spy).not.toHaveBeenCalled()
 
         it "has a callCount of zero", ->
-          expect(spy.callCount).toBe 0
+          expect(@spy.callCount).toBe 0
 
         it "has nothing in the calls array", ->
-          expect(spy.calls.length).toBe 0
+          expect(@spy.calls.length).toBe 0
 
         it "has no argsForCall entries", ->
-          expect(spy.argsForCall.length).toBe 0
+          expect(@spy.argsForCall.length).toBe 0
 
         it "has no mostRecentCall", ->
-          expect(spy.mostRecentCall).toEqual {}
+          expect(@spy.mostRecentCall).toEqual {}
 
       context "stubbing is not satisfied", ->
         it "returns the default stubbed value", ->
-          expect(spy("anything at all")).toBe "football"
+          expect(@spy("anything at all")).toBe "football"
 
       context "stubbing is satisfied", ->
         it "returns the specific stubbed value", ->
-          expect(spy("bored")).toBe "baseball"
+          expect(@spy("bored")).toBe "baseball"
 
   describe "#whenContext", ->
     Given -> @ctx = "A"
