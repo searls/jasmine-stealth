@@ -69,33 +69,21 @@ describe "jasmine-stealth", ->
         Then -> expect(@fake).toHaveBeenCalledWith("panda", "baby")
 
     context "default andReturn plus some conditional stubbing", ->
-      beforeEach ->
-        @spy.andReturn "football"
-        @spy.when("bored").thenReturn "baseball"
+      Given -> @spy.andReturn "football"
+      Given -> @spy.when("bored").thenReturn "baseball"
 
       describe "it doesn't  appear to invoke the spy", ->
-        it "hasn't been called yet", ->
-          expect(@spy).not.toHaveBeenCalled()
-
-        it "has a callCount of zero", ->
-          expect(@spy.callCount).toBe 0
-
-        it "has nothing in the calls array", ->
-          expect(@spy.calls.length).toBe 0
-
-        it "has no argsForCall entries", ->
-          expect(@spy.argsForCall.length).toBe 0
-
-        it "has no mostRecentCall", ->
-          expect(@spy.mostRecentCall).toEqual {}
+        Then -> expect(@spy).not.toHaveBeenCalled()
+        Then -> @spy.callCount == 0
+        Then -> @spy.calls.length == 0
+        Then -> @spy.argsForCall.length == 0
+        Then -> expect(@spy.mostRecentCall).toEqual({})
 
       context "stubbing is not satisfied", ->
-        it "returns the default stubbed value", ->
-          expect(@spy("anything at all")).toBe "football"
+        Then -> @spy("anything at all") == "football"
 
       context "stubbing is satisfied", ->
-        it "returns the specific stubbed value", ->
-          expect(@spy("bored")).toBe "baseball"
+        Then -> @spy("bored") == "baseball"
 
   describe "#whenContext", ->
     Given -> @ctx = "A"
@@ -110,33 +98,22 @@ describe "jasmine-stealth", ->
       Then -> @result == undefined
 
   describe "#mostRecentCallThat", ->
-    spy = undefined
-    beforeEach ->
-      spy = jasmine.createSpy()
-      spy "foo"
-      spy "bar"
-      spy "baz"
+    Given -> @spy = jasmine.createSpy()
+    Given -> @spy("foo")
+    Given -> @spy("bar")
+    Given -> @spy("baz")
 
     context "when given a truth test", ->
-      result = undefined
-      beforeEach ->
-        result = spy.mostRecentCallThat((call) ->
-          call.args[0] is "bar"
-        )
-
-      it "returns the call we want", ->
-        expect(result).toBe spy.calls[1]
+      When -> @result = @spy.mostRecentCallThat (call) ->
+        call.args[0] is "bar"
+      Then -> @result == @spy.calls[1]
 
     context "when the context matters", ->
-      result = undefined
-      beforeEach ->
-        @panda = "baz"
-        result = spy.mostRecentCallThat((call) ->
-          call.args[0] is @panda
-        , this)
-
-      it "returns the call we want", ->
-        expect(result).toBe spy.calls[2]
+      Given -> @panda = "baz"
+      When -> @result = @spy.mostRecentCallThat((call) ->
+        call.args[0] is @panda
+      , this)
+      Then -> @result == @spy.calls[2]
 
   describe "jasmine.createStubObj", ->
     context "used just like createSpyObj", ->
