@@ -53,18 +53,20 @@ describe "jasmine-stealth", ->
           Then -> @spy(@complexType) == "breakfast"
 
       context "stubbing with multiple arguments", ->
-        Given -> @spy.when(1, 1, 2, 3, 5).thenReturn "fib"
+        Given -> @spy.when(1, 1, 2, 3, 5).thenReturn("fib")
         Then -> @spy(1, 1, 2, 3, 5) == "fib"
+
+      context "returns a function", ->
+        Given -> @func = -> throw "WTF DUDE"
+        Given -> @spy.when(1).thenReturn(@func)
+        Then -> @spy(1) == @func
 
     describe "#thenCallFake", ->
       context "stubbing a conditional call fake", ->
-        beforeEach ->
-          @fake = jasmine.createSpy("fake")
-          @spy.when("panda").thenCallFake(@fake)
-          @spy("panda")
-
-        it "calls the fake function", ->
-          expect(@fake).toHaveBeenCalled()
+        Given -> @fake = jasmine.createSpy("fake")
+        Given -> @spy.when("panda", "baby").thenCallFake(@fake)
+        When -> @spy("panda", "baby")
+        Then -> expect(@fake).toHaveBeenCalledWith("panda", "baby")
 
     context "default andReturn plus some conditional stubbing", ->
       beforeEach ->
