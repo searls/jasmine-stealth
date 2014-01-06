@@ -1,211 +1,210 @@
-window.context = window.describe
-window.xcontext = window.xdescribe
-describe "jasmine-stealth", ->
-  describe "aliases", ->
-    Then -> jasmine.createStub == jasmine.createSpy
+( ->
+  root = this
 
-    describe ".stubFor", ->
-      context "existing method", ->
-        When -> stubFor(window, "prompt").andReturn("lol")
-        Then -> window.prompt() == "lol"
+  root.context = root.describe
+  root.xcontext = root.xdescribe
 
-      context "non-existing method", ->
-        Given -> @obj = { woot: null }
-        When -> spyOn(@obj, "woot").andReturn("troll")
-        Then -> @obj.woot() == "troll"
+  describe "jasmine-stealth", ->
+    describe "aliases", ->
+      Then -> jasmine.createStub == jasmine.createSpy
 
-  describe "#when", ->
-    Given -> @spy = jasmine.createSpy("my spy")
+      describe ".stubFor", ->
+        context "existing method", ->
+          Given -> root.lolol = -> "roflcopter"
+          When -> stubFor(root, "lolol").andReturn("lol")
+          Then -> root.lolol() == "lol"
 
-    context "a spy is returned by then*()", ->
-      Then -> expect(@spy.when("a").thenReturn("")).toBe(@spy)
-      Then -> expect(@spy.when("a").thenCallFake((->))).toBe(@spy)
+        context "non-existing method", ->
+          Given -> @obj = { woot: null }
+          When -> spyOn(@obj, "woot").andReturn("troll")
+          Then -> @obj.woot() == "troll"
 
-    describe "#thenReturn", ->
-      context "the stubbing is unmet", ->
-        Given -> @spy.when("53").thenReturn("yay!")
-        Then -> expect(@spy("not 53")).not.toBeDefined()
+    describe "#when", ->
+      Given -> @spy = jasmine.createSpy("my spy")
 
-      context "the stubbing is met", ->
-        Given -> @spy.when("53").thenReturn("winning")
-        Then -> @spy("53") == "winning"
+      context "a spy is returned by then*()", ->
+        Then -> expect(@spy.when("a").thenReturn("")).toBe(@spy)
+        Then -> expect(@spy.when("a").thenCallFake((->))).toBe(@spy)
 
-      context "multiple stubbings exist", ->
-        Given -> @spy.when("pirate", booty: ["jewels", jasmine.any(String)]).thenReturn("argh!")
-        Given -> @spy.when("panda", 1).thenReturn("sad")
+      describe "#thenReturn", ->
+        context "the stubbing is unmet", ->
+          Given -> @spy.when("53").thenReturn("yay!")
+          Then -> expect(@spy("not 53")).not.toBeDefined()
 
-        Then -> @spy("pirate", booty: ["jewels", "coins"]) ==  "argh!"
-        Then -> @spy("panda", 1) == "sad"
+        context "the stubbing is met", ->
+          Given -> @spy.when("53").thenReturn("winning")
+          Then -> @spy("53") == "winning"
 
-      context "complex types", ->
-        Given -> @complexType =
-          fruits: [ "apple", "berry" ]
-          yogurts:
-            greek: ->
-              "expensive"
+        context "multiple stubbings exist", ->
+          Given -> @spy.when("pirate", booty: ["jewels", jasmine.any(String)]).thenReturn("argh!")
+          Given -> @spy.when("panda", 1).thenReturn("sad")
 
-        context "complex return types", ->
-          Given -> @spy.when("breakfast").thenReturn(@complexType)
-          Then -> @spy("breakfast") == @complexType
+          Then -> @spy("pirate", booty: ["jewels", "coins"]) ==  "argh!"
+          Then -> @spy("panda", 1) == "sad"
 
-        context "complex argument types", ->
-          Given -> @spy.when(@complexType).thenReturn("breakfast")
-          Then -> @spy(@complexType) == "breakfast"
+        context "complex types", ->
+          Given -> @complexType =
+            fruits: [ "apple", "berry" ]
+            yogurts:
+              greek: ->
+                "expensive"
 
-      context "stubbing with multiple arguments", ->
-        Given -> @spy.when(1, 1, 2, 3, 5).thenReturn("fib")
-        Then -> @spy(1, 1, 2, 3, 5) == "fib"
+          context "complex return types", ->
+            Given -> @spy.when("breakfast").thenReturn(@complexType)
+            Then -> @spy("breakfast") == @complexType
 
-      context "returns a function", ->
-        Given -> @func = -> throw "WTF DUDE"
-        Given -> @spy.when(1).thenReturn(@func)
-        Then -> @spy(1) == @func
+          context "complex argument types", ->
+            Given -> @spy.when(@complexType).thenReturn("breakfast")
+            Then -> @spy(@complexType) == "breakfast"
 
-    describe "#thenCallFake", ->
-      context "stubbing a conditional call fake", ->
-        Given -> @fake = jasmine.createSpy("fake")
-        Given -> @spy.when("panda", "baby").thenCallFake(@fake)
-        When -> @spy("panda", "baby")
-        Then -> expect(@fake).toHaveBeenCalledWith("panda", "baby")
+        context "stubbing with multiple arguments", ->
+          Given -> @spy.when(1, 1, 2, 3, 5).thenReturn("fib")
+          Then -> @spy(1, 1, 2, 3, 5) == "fib"
 
-    context "default andReturn plus some conditional stubbing", ->
-      Given -> @spy.andReturn "football"
-      Given -> @spy.when("bored").thenReturn "baseball"
+        context "returns a function", ->
+          Given -> @func = -> throw "WTF DUDE"
+          Given -> @spy.when(1).thenReturn(@func)
+          Then -> @spy(1) == @func
 
-      describe "it doesn't  appear to invoke the spy", ->
-        Then -> expect(@spy).not.toHaveBeenCalled()
-        Then -> @spy.callCount == 0
-        Then -> @spy.calls.length == 0
-        Then -> @spy.argsForCall.length == 0
-        Then -> expect(@spy.mostRecentCall).toEqual({})
+      describe "#thenCallFake", ->
+        context "stubbing a conditional call fake", ->
+          Given -> @fake = jasmine.createSpy("fake")
+          Given -> @spy.when("panda", "baby").thenCallFake(@fake)
+          When -> @spy("panda", "baby")
+          Then -> expect(@fake).toHaveBeenCalledWith("panda", "baby")
 
-      context "stubbing is not satisfied", ->
-        Then -> @spy("anything at all") == "football"
+      context "default andReturn plus some conditional stubbing", ->
+        Given -> @spy.andReturn "football"
+        Given -> @spy.when("bored").thenReturn "baseball"
 
-      context "stubbing is satisfied", ->
-        Then -> @spy("bored") == "baseball"
+        describe "it doesn't  appear to invoke the spy", ->
+          Then -> expect(@spy).not.toHaveBeenCalled()
+          Then -> @spy.callCount == 0
+          Then -> @spy.calls.length == 0
+          Then -> @spy.argsForCall.length == 0
+          Then -> expect(@spy.mostRecentCall).toEqual({})
 
-  describe "#whenContext", ->
-    Given -> @ctx = "A"
-    Given -> @spy = jasmine.createSpy().whenContext(@ctx).thenReturn("foo")
+        context "stubbing is not satisfied", ->
+          Then -> @spy("anything at all") == "football"
 
-    context "when satisfied", ->
-      When -> @result = @spy.call(@ctx)
-      Then -> @result == "foo"
+        context "stubbing is satisfied", ->
+          Then -> @spy("bored") == "baseball"
 
-    context "when not satisfied", ->
-      When -> @result = @spy.call("B")
-      Then -> @result == undefined
+    describe "#whenContext", ->
+      Given -> @ctx = "A"
+      Given -> @spy = jasmine.createSpy().whenContext(@ctx).thenReturn("foo")
 
-  describe "#mostRecentCallThat", ->
-    Given -> @spy = jasmine.createSpy()
-    Given -> @spy("foo")
-    Given -> @spy("bar")
-    Given -> @spy("baz")
+      context "when satisfied", ->
+        When -> @result = @spy.call(@ctx)
+        Then -> @result == "foo"
 
-    context "when given a truth test", ->
-      When -> @result = @spy.mostRecentCallThat (call) ->
-        call.args[0] is "bar"
-      Then -> @result == @spy.calls[1]
+      context "when not satisfied", ->
+        When -> @result = @spy.call("B")
+        Then -> @result == undefined
 
-    context "when the context matters", ->
-      Given -> @panda = "baz"
-      When -> @result = @spy.mostRecentCallThat((call) ->
-        call.args[0] is @panda
-      , this)
-      Then -> @result == @spy.calls[2]
-
-  describe "jasmine.createStubObj", ->
-    context "used just like createSpyObj", ->
-      Given -> @subject = jasmine.createStubObj('foo',['a','b'])
-      Given -> @subject.a()
-      Given -> @subject.b()
-      Then -> expect(@subject.a).toHaveBeenCalled()
-      Then -> expect(@subject.b).toHaveBeenCalled()
-
-    context "passed an obj literal", ->
-      Given -> @subject = jasmine.createStubObj 'foo',
-        a: 5
-        b: -> 8
-      Then -> @subject.a() == 5
-      Then -> @subject.b() == 8
-
-  describe "jasmine.argThat (jasmine.Matchers.ArgThat)", ->
-    context "with when()", ->
+    describe "#mostRecentCallThat", ->
       Given -> @spy = jasmine.createSpy()
-      Given -> @spy.when(jasmine.argThat (arg) -> arg > 5).thenReturn("YAY")
-      Given -> @spy.when(jasmine.argThat (arg) -> arg < 3).thenReturn("BOO")
+      Given -> @spy("foo")
+      Given -> @spy("bar")
+      Given -> @spy("baz")
 
-      Then -> @spy(1) == "BOO"
-      Then -> @spy(4) == undefined
-      Then -> @spy(8) == "YAY"
+      context "when given a truth test", ->
+        When -> @result = @spy.mostRecentCallThat (call) ->
+          call.args[0] is "bar"
+        Then -> @result == @spy.calls[1]
+
+      context "when the context matters", ->
+        Given -> @panda = "baz"
+        When -> @result = @spy.mostRecentCallThat((call) ->
+          call.args[0] is @panda
+        , this)
+        Then -> @result == @spy.calls[2]
+
+    describe "jasmine.createStubObj", ->
+      context "used just like createSpyObj", ->
+        Given -> @subject = jasmine.createStubObj('foo',['a','b'])
+        Given -> @subject.a()
+        Given -> @subject.b()
+        Then -> expect(@subject.a).toHaveBeenCalled()
+        Then -> expect(@subject.b).toHaveBeenCalled()
+
+      context "passed an obj literal", ->
+        Given -> @subject = jasmine.createStubObj 'foo',
+          a: 5
+          b: -> 8
+        Then -> @subject.a() == 5
+        Then -> @subject.b() == 8
+
+    describe "jasmine.argThat (jasmine.Matchers.ArgThat)", ->
+      context "with when()", ->
+        Given -> @spy = jasmine.createSpy()
+        Given -> @spy.when(jasmine.argThat (arg) -> arg > 5).thenReturn("YAY")
+        Given -> @spy.when(jasmine.argThat (arg) -> arg < 3).thenReturn("BOO")
+
+        Then -> @spy(1) == "BOO"
+        Then -> @spy(4) == undefined
+        Then -> @spy(8) == "YAY"
 
 
-    context "with a spy arg, using toHaveBeenCalledWith", ->
+      context "with a spy arg, using toHaveBeenCalledWith", ->
+        Given -> @spy = jasmine.createSpy()
+        When -> @spy(5)
+        Then -> expect(@spy).toHaveBeenCalledWith(jasmine.argThat (arg) -> arg < 6)
+        Then -> expect(@spy).not.toHaveBeenCalledWith(jasmine.argThat (arg) -> arg > 5)
+
+      context "passes the equals contract", ->
+        Then -> true == jasmine.getEnv().equals_(5, jasmine.argThat (arg) -> arg == 5)
+        Then -> false == jasmine.getEnv().equals_(5, jasmine.argThat (arg) -> arg == 4)
+        Then -> false == jasmine.getEnv().equals_(5, jasmine.argThat (arg) -> arg != 5)
+
+    describe "jasmine.captor, #capture() & .value", ->
+      Given -> @captor = jasmine.captor()
       Given -> @spy = jasmine.createSpy()
-      When -> @spy(5)
-      Then -> expect(@spy).toHaveBeenCalledWith(jasmine.argThat (arg) -> arg < 6)
-      Then -> expect(@spy).not.toHaveBeenCalledWith(jasmine.argThat (arg) -> arg > 5)
+      When -> @spy("foo!")
+      Then -> expect(@spy).toHaveBeenCalledWith(@captor.capture())
+      And -> @captor.value == "foo!"
 
-    context "passes the equals contract", ->
-      Then -> true == jasmine.getEnv().equals_(5, jasmine.argThat (arg) -> arg == 5)
-      Then -> false == jasmine.getEnv().equals_(5, jasmine.argThat (arg) -> arg == 4)
-      Then -> false == jasmine.getEnv().equals_(5, jasmine.argThat (arg) -> arg != 5)
+      it "readme example", ->
+        captor = jasmine.captor()
+        save = jasmine.createSpy()
 
-  describe "jasmine.captor, #capture() & .value", ->
-    Given -> @captor = jasmine.captor()
-    Given -> @spy = jasmine.createSpy()
-    When -> @spy("foo!")
-    Then -> expect(@spy).toHaveBeenCalledWith(@captor.capture())
-    And -> @captor.value == "foo!"
+        save({ name: "foo", phone: "123"});
 
-    it "readme example", ->
-      captor = jasmine.captor()
-      save = jasmine.createSpy()
+        expect(save).toHaveBeenCalledWith(captor.capture())
+        expect(captor.value.name).toBe("foo")
 
-      save({ name: "foo", phone: "123"});
+    describe "root.spyOnConstructor", ->
+      describe "a simple class", ->
+        class root.Pizza
+          makeSlice: -> "nah"
 
-      expect(save).toHaveBeenCalledWith(captor.capture())
-      expect(captor.value.name).toBe("foo")
+        context "spying on the constructor - string method arg", ->
+          Given -> @pizzaSpies = spyOnConstructor(root, "Pizza", "makeSlice")
+          When -> new Pizza("banz").makeSlice("lol")
+          Then -> expect(@pizzaSpies.constructor).toHaveBeenCalledWith("banz")
+          Then -> expect(@pizzaSpies.makeSlice).toHaveBeenCalledWith("lol")
 
-  describe "window.spyOnConstructor", ->
-    describe "a simple class", ->
-      class window.Pizza
-        makeSlice: -> "nah"
+        context "spying on the constructor - array method arg", ->
+          Given -> @pizzaSpies = spyOnConstructor(root, "Pizza", ["makeSlice"])
+          When -> new Pizza("banz").makeSlice("lol")
+          Then -> expect(@pizzaSpies.constructor).toHaveBeenCalledWith("banz")
+          Then -> expect(@pizzaSpies.makeSlice).toHaveBeenCalledWith("lol")
 
-      context "spying on the constructor - string method arg", ->
-        Given -> @pizzaSpies = spyOnConstructor(window, "Pizza", "makeSlice")
-        When -> new Pizza("banz").makeSlice("lol")
-        Then -> expect(@pizzaSpies.constructor).toHaveBeenCalledWith("banz")
-        Then -> expect(@pizzaSpies.makeSlice).toHaveBeenCalledWith("lol")
+        context "normal operation", ->
+          Given -> @pizza = new Pizza
+          Then -> @pizza.makeSlice() == "nah"
 
-      context "spying on the constructor - array method arg", ->
-        Given -> @pizzaSpies = spyOnConstructor(window, "Pizza", ["makeSlice"])
-        When -> new Pizza("banz").makeSlice("lol")
-        Then -> expect(@pizzaSpies.constructor).toHaveBeenCalledWith("banz")
-        Then -> expect(@pizzaSpies.makeSlice).toHaveBeenCalledWith("lol")
+      describe "a collaboration", ->
+        class root.View
+          serialize: ->
+            model: new Model().toJSON()
+        class root.Model
 
-      context "normal operation", ->
-        Given -> @pizza = new Pizza
-        Then -> @pizza.makeSlice() == "nah"
-
-    describe "a collaboration", ->
-      class window.View
-        serialize: ->
-          model: new Model().toJSON()
-      class window.Model
-
-      context "stubbing the model's method", ->
-        Given -> @modelSpies = spyOnConstructor(window, "Model", "toJSON")
-        Given -> @subject = new window.View()
-        Given -> @modelSpies.toJSON.andReturn("some json")
-        When -> @result = @subject.serialize()
-        Then -> expect(@result).toEqual
-          model: "some json"
-
-
-
-
-
-
-
+        context "stubbing the model's method", ->
+          Given -> @modelSpies = spyOnConstructor(root, "Model", "toJSON")
+          Given -> @subject = new root.View()
+          Given -> @modelSpies.toJSON.andReturn("some json")
+          When -> @result = @subject.serialize()
+          Then -> expect(@result).toEqual
+            model: "some json"
+)()

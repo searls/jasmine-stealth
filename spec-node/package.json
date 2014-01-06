@@ -1,0 +1,16 @@
+{
+  "name": "example-jasmine-stealth-project",
+  "version": "0.0.0",
+  "description": "just for node tests",
+  "main": "index.js",
+  "scripts": {
+    "test": "grunt spec:unit"
+  },
+  "author": "",
+  "license": "BSD-2-Clause",
+  "devDependencies": {
+    "grunt": "~0.4.2",
+    "grunt-jasmine-bundle": "~0.1.4",
+    "coffee-script": "~1.6.3"
+  }
+}
