@@ -1,4 +1,4 @@
-/* jasmine-stealth - 0.0.14
+/* jasmine-stealth - 0.0.15
  * Makes Jasmine spies a bit more robust
  * https://github.com/searls/jasmine-stealth
  */
