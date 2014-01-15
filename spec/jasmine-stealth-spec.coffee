@@ -77,7 +77,7 @@
         Given -> @spy.andReturn "football"
         Given -> @spy.when("bored").thenReturn "baseball"
 
-        describe "it doesn't  appear to invoke the spy", ->
+        describe "it doesn't appear to invoke the spy", ->
           Then -> expect(@spy).not.toHaveBeenCalled()
           Then -> @spy.callCount == 0
           Then -> @spy.calls.length == 0
@@ -89,6 +89,27 @@
 
         context "stubbing is satisfied", ->
           Then -> @spy("bored") == "baseball"
+
+      context "default andCallFake plus some conditional stubbing", ->
+        Given -> @spy.andCallFake (s1,s2) -> s2
+        Given -> @spy.when("function").thenCallFake -> "football"
+        Given -> @spy.when("value").thenReturn "baseball"
+
+        describe "it doesn't appear to invoke the spy", ->
+          Then -> expect(@spy).not.toHaveBeenCalled()
+          Then -> @spy.callCount == 0
+          Then -> @spy.calls.length == 0
+          Then -> @spy.argsForCall.length == 0
+          Then -> expect(@spy.mostRecentCall).toEqual({})
+
+        context "default stubbing is satisfied", ->
+          Then -> @spy("cricket", "tennis") == "tennis"
+
+        context "conditional function stubbing is satisfied", ->
+          Then -> @spy("function") == "football"
+
+        context "conditional value stubbing is satisfied", ->
+          Then -> @spy("value") == "baseball"
 
     describe "#whenContext", ->
       Given -> @ctx = "A"
