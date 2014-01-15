@@ -92,7 +92,7 @@
       }
     };
     whatToDoWhenTheSpyGetsCalled = function(spy) {
-      var matchesStub, priorStubbing;
+      var matchesStub, priorPlan;
       matchesStub = function(stubbing, args, context) {
         switch (stubbing.type) {
           case "args":
@@ -101,7 +101,7 @@
             return jasmine.getEnv().equals_(stubbing.ifThis, context);
         }
       };
-      priorStubbing = spy.plan();
+      priorPlan = spy.plan;
       return spy.andCallFake(function() {
         var i, stubbing;
         i = 0;
@@ -116,7 +116,7 @@
           }
           i++;
         }
-        return priorStubbing;
+        return priorPlan.apply(spy, arguments);
       });
     };
     jasmine.Spy.prototype.whenContext = function(context) {

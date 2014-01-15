@@ -62,7 +62,7 @@
         when "args" then jasmine.getEnv().equals_(stubbing.ifThis, jasmine.util.argsToArray(args))
         when "context" then jasmine.getEnv().equals_(stubbing.ifThis,context)
 
-    priorStubbing = spy.plan()
+    priorPlan = spy.plan
 
     spy.andCallFake ->
       i = 0
@@ -74,7 +74,7 @@
           else
             return stubbing.thenThat
         i++
-      priorStubbing
+      priorPlan.apply(spy, arguments)
 
   jasmine.Spy::whenContext = (context) ->
     spy = this
