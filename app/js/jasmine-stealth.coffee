@@ -92,7 +92,7 @@
   stubChainer = (spy, type, ifThis) ->
     addStubbing = (satisfaction) ->
       (thenThat) ->
-        spy._stealth_stubbings.push({type, ifThis, satisfaction, thenThat})
+        spy._stealth_stubbings.unshift({type, ifThis, satisfaction, thenThat})
         spy
 
     thenReturn: addStubbing("return")

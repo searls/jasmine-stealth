@@ -66,6 +66,12 @@
           Given -> @spy.when(1).thenReturn(@func)
           Then -> @spy(1) == @func
 
+        context "a stubbing is later overridden", ->
+          Given -> @spy.when("foo").thenReturn(1)
+          context "here's that override I talked about", ->
+            Given -> @spy.when("foo").thenReturn(2)
+            Then -> @spy("foo") == 2
+
       describe "#thenCallFake", ->
         context "stubbing a conditional call fake", ->
           Given -> @fake = jasmine.createSpy("fake")
