@@ -1,6 +1,6 @@
 {
   "name": "jasmine-stealth",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "main": "dist/jasmine-stealth.js",
   "ignore": [
     "app",
