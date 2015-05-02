@@ -1,6 +1,6 @@
 {
   "name": "jasmine-stealth",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "description": "Makes Jasmine spies a bit more robust",
   "homepage": "https://github.com/searls/jasmine-stealth",
   "author": {
@@ -13,7 +13,7 @@
     "minijasminenode": "~0.2.4"
   },
   "devDependencies": {
-    "lineman": ">=0.11.0",
+    "lineman": ">=0.24.0",
     "grunt": "~0.4.2",
     "grunt-write-bower-json": "0.0.1"
   },
