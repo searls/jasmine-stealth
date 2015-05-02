@@ -1,5 +1,5 @@
 ( ->
-  root = this
+  root = `(1, eval)('this')`
 
   #private helpers
 
