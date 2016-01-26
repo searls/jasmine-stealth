@@ -1,5 +1,8 @@
 # jasmine-stealth
 
+**Hello! jasmine-stealth is no longer actively maintained, because the maintainers have moved onto using [testdouble.js](https://github.com/testdouble/testdouble.js) in its place. If you're looking for a great test double library or interested in jasmine 2 support for jasmien-stealth, we'd recommend migrating to testdouble.js instead.**
+
+
 [![Build Status](https://secure.travis-ci.org/searls/jasmine-stealth.png)](http://travis-ci.org/searls/jasmine-stealth)
 
 
